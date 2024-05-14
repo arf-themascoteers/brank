@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import cohen_kappa_score
 import numpy as np
 from algorithms.bsdr.linterp import LinearInterpolationModule
-import calculator
+import train_test_evaluator
 
 
 class BSDR:
@@ -82,33 +82,15 @@ class BSDR:
         y_hat = self.model(spline)
         y_hat = y_hat.detach().cpu().numpy()
         y = y.detach().cpu().numpy()
-        if self.is_regression():
-            y_hat = y_hat.reshape(-1)
-            r2 = calculator.calculate_r2(y, y_hat, self.split.scaler)
-            rmse = calculator.calculate_rmse(y, y_hat, self.split.scaler)
-            self.model.train()
-            return max(r2,0), rmse
         y_hat = np.argmax(y_hat, axis=1)
         accuracy = accuracy_score(y, y_hat)
+        aa = train_test_evaluator.average_accuracy(y, y_hat)
         kappa = cohen_kappa_score(y, y_hat)
         self.model.train()
-        return accuracy, kappa
-
-    def get_oa(self):
-        if self.is_regression():
-            return "r2"
-        return "accuracy"
-
-    def get_k(self):
-        if self.is_regression():
-            return "rmse"
-        return "kappa"
+        return accuracy, aa, kappa
 
     def write_columns(self):
-        columns = ["epoch",
-                   f"train_{self.get_oa()}",f"validation_{self.get_oa()}",
-                   f"train_{self.get_k()}",f"validation_{self.get_k()}",
-                   "time","lr"]
+        columns = "epoch,train_oa,validation_oa,train_aa,validation_aa,train_k,validation_k,time,lr".split(",")
         for index,p in enumerate(self.model.get_indices()):
             columns.append(f"band_{index+1}")
         print("".join([c.ljust(20) for c in columns]))
@@ -122,9 +104,9 @@ class BSDR:
 
     def dump_row(self, epoch, optimizer, spline, y, spline_validation, y_validation):
         current_lr = self.get_current_lr(optimizer)
-        train_oa, train_k = self.evaluate(spline, y)
-        test_oa, test_k = self.evaluate(spline_validation, y_validation)
-        row = [train_oa, test_oa, train_k, test_k]
+        train_oa, train_aa, train_k = self.evaluate(spline, y)
+        test_oa, test_aa, test_k = self.evaluate(spline_validation, y_validation)
+        row = [train_oa, test_oa, train_aa, test_aa, train_k, test_k]
         row = [r for r in row]
         elapsed_time = self.get_elapsed_time()
         row = [epoch] + row + [elapsed_time, current_lr] + self.get_indices()

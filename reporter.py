@@ -115,10 +115,10 @@ class Reporter:
     def get_saved_metrics_for_all_feature(self, fold, dataset):
         df = pd.read_csv(self.all_features_details_file)
         if len(df) == 0:
-            return None, None
+            return None, None, None
         rows = df.loc[(df['fold'] == fold) & (df['dataset'] == dataset)]
         if len(rows) == 0:
-            return None, None
+            return None, None, None
         row = rows.iloc[0]
         return row["oa"], row["aa"], row["k"]
 

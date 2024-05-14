@@ -16,7 +16,7 @@ class TaskRunner:
         self.verbose = verbose
         self.reporter = Reporter(filename, self.skip_all_bands)
         self.cache = pd.DataFrame(columns=["dataset","fold","algorithm","repeat",
-                                           "oa","k","time","selected_features"])
+                                           "oa","aa","k","time","selected_features"])
 
     def evaluate(self):
         for dataset_name in self.task["datasets"]:
@@ -43,8 +43,8 @@ class TaskRunner:
         metric = self.get_from_cache(algorithm, fold, repeat)
         if metric is not None:
             print(f"Selected features got from cache for {algorithm.splits.get_name()} for size {algorithm.target_size} for fold {fold} for {algorithm.get_name()}")
-            oa, k = algorithm.compute_performance_with_selected_indices(metric.selected_features)
-            return Metrics(metric.time, oa, k, metric.selected_features)
+            oa, aa, k = algorithm.compute_performance_with_selected_indices(metric.selected_features)
+            return Metrics(metric.time, oa, aa, k, metric.selected_features)
         print(f"Computing {algorithm.get_name()} {algorithm.splits.get_name()} Fold {fold} Repeat {repeat}")
         metric = algorithm.compute_performance()
         self.save_to_cache(algorithm, fold, repeat, metric)
@@ -56,7 +56,7 @@ class TaskRunner:
         self.cache.loc[len(self.cache)] = {
             "dataset":algorithm.splits.get_name(), "algorithm": algorithm.get_name(),
             "fold": fold, "repeat":repeat,
-            "time":metric.time,"oa":metric.oa,"k":metric.k, "selected_features":algorithm.get_all_indices()
+            "time":metric.time,"oa":metric.oa,"aa":metric.aa,"k":metric.k, "selected_features":algorithm.get_all_indices()
         }
 
     def get_from_cache(self, algorithm:Algorithm, fold, repeat_no):
@@ -74,20 +74,20 @@ class TaskRunner:
             return None
         row = rows.iloc[0]
         selected_features = row["selected_features"][0:algorithm.target_size]
-        return Metrics(row["time"], row["oa"], row["k"], selected_features)
+        return Metrics(row["time"], row["oa"],row["aa"], row["k"], selected_features)
 
     def evaluate_for_all_features(self, dataset):
         for fold, splits in enumerate(dataset.get_k_folds()):
             self.evaluate_for_all_features_fold(fold, splits)
 
     def evaluate_for_all_features_fold(self, fold, splits):
-        oa, k = self.reporter.get_saved_metrics_for_all_feature(fold, splits.get_name())
+        oa, aa, k = self.reporter.get_saved_metrics_for_all_feature(fold, splits.get_name())
         if oa is not None and k is not None:
             print(f"Fold {fold} for {splits.get_name()} was done")
             return
-        oa, k = evaluate_train_test_pair(splits.evaluation_train_x, splits.evaluation_train_y,
+        oa, aa, k = evaluate_train_test_pair(splits.evaluation_train_x, splits.evaluation_train_y,
                                                     splits.evaluation_test_x, splits.evaluation_test_y)
-        self.reporter.write_details_all_features(fold, splits.get_name(), oa, k)
+        self.reporter.write_details_all_features(fold, splits.get_name(), oa, aa, k)
 
 
 
