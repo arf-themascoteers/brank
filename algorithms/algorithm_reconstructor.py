@@ -27,12 +27,15 @@ class AlgorithmReconstructor(Algorithm):
                 optimizer.zero_grad()
                 y_hat = recann(X)
                 loss = self.criterion(y_hat, y)
-                loss.backward()
-                optimizer.step()
+
                 ind_loss = torch.mean(torch.pow(y - y_hat,2),dim=0)
                 sorted_indices = (torch.argsort(ind_loss, descending=True)).tolist()
                 if self.verbose:
-                    print(sorted_indices[0:10])
+                    print(sorted_indices[0:self.target_size])
+
+                loss.backward()
+                optimizer.step()
+
             if self.verbose and epoch % 100 == 0:
                 print(f"Epoch={epoch} Loss={round(loss.item(), 5)}")
         super()._set_all_indices(sorted_indices)

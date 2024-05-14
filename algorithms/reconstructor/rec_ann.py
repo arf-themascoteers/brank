@@ -7,8 +7,13 @@ class RecANN(nn.Module):
         super().__init__()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.feature_size = feature_size
+        bottleneck = self.feature_size//4
         self.linear = nn.Sequential(
-            nn.Linear(self.feature_size, self.feature_size),
+            nn.Linear(self.feature_size, bottleneck),
+            nn.LeakyReLU(),
+            nn.Linear(bottleneck, bottleneck),
+            nn.LeakyReLU(),
+            nn.Linear(bottleneck, self.feature_size),
             nn.Sigmoid()
         )
 
