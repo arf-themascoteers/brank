@@ -94,20 +94,20 @@ class BSDR:
         self.model.train()
         return accuracy, kappa
 
-    def get_metric1(self):
+    def get_oa(self):
         if self.is_regression():
             return "r2"
         return "accuracy"
 
-    def get_metric2(self):
+    def get_k(self):
         if self.is_regression():
             return "rmse"
         return "kappa"
 
     def write_columns(self):
         columns = ["epoch",
-                   f"train_{self.get_metric1()}",f"validation_{self.get_metric1()}",
-                   f"train_{self.get_metric2()}",f"validation_{self.get_metric2()}",
+                   f"train_{self.get_oa()}",f"validation_{self.get_oa()}",
+                   f"train_{self.get_k()}",f"validation_{self.get_k()}",
                    "time","lr"]
         for index,p in enumerate(self.model.get_indices()):
             columns.append(f"band_{index+1}")
@@ -122,9 +122,9 @@ class BSDR:
 
     def dump_row(self, epoch, optimizer, spline, y, spline_validation, y_validation):
         current_lr = self.get_current_lr(optimizer)
-        train_metric1, train_metric2 = self.evaluate(spline, y)
-        test_metric1, test_metric2 = self.evaluate(spline_validation, y_validation)
-        row = [train_metric1, test_metric1, train_metric2, test_metric2]
+        train_oa, train_k = self.evaluate(spline, y)
+        test_oa, test_k = self.evaluate(spline_validation, y_validation)
+        row = [train_oa, test_oa, train_k, test_k]
         row = [r for r in row]
         elapsed_time = self.get_elapsed_time()
         row = [epoch] + row + [elapsed_time, current_lr] + self.get_indices()

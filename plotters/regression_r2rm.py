@@ -12,15 +12,15 @@ df_original = df_original.sort_values('algorithm')
 colors = ['#909c86', '#e389b9', '#269658', '#f20a21', '#000000']
 markers = ['s', 'P', 'D', 'o', '*', '.']
 labels = ["$R^2$", "RMSE"]
-min_r2_lim = df_original["metric1"].min() -0.1
-max_r2_lim = df_original["metric1"].max() +0.1
-min_rmse_lim = df_original["metric2"].min() -1
-max_rmse_lim = df_original["metric2"].max() +1
+min_r2_lim = df_original["oa"].min() -0.1
+max_r2_lim = df_original["oa"].max() +0.1
+min_rmse_lim = df_original["k"].min() -1
+max_rmse_lim = df_original["k"].max() +1
 
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(15, 6))
 axes[0].set_ylim(min_r2_lim, max_r2_lim)
 axes[1].set_ylim(min_rmse_lim, max_rmse_lim)
-for metric_index,metric in enumerate(["metric1", "metric2"]):
+for metric_index,metric in enumerate(["oa", "k"]):
     dataset_df = df_original[df_original["dataset"] == "LUCAS"].copy()
     for index, algorithm in enumerate(priority_order):
         alg_df = dataset_df[dataset_df["algorithm"] == algorithm]

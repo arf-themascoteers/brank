@@ -10,12 +10,12 @@ def get_metrics(df2, target_size=None):
         return None, None, None
 
     time_mean = df3["time"].mean()
-    oa_mean = df3["metric1"].mean()
-    kappa_mean = df3["metric2"].mean()
+    oa_mean = df3["oa"].mean()
+    kappa_mean = df3["k"].mean()
 
     time_std = df3["time"].std()
-    oa_std = df3["metric1"].std()
-    kappa_std = df3["metric2"].std()
+    oa_std = df3["oa"].std()
+    kappa_std = df3["k"].std()
 
     time_str = f"{time_mean:.2f}"
     oa_str = f"{oa_mean:.2f}"

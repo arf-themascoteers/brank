@@ -12,13 +12,13 @@ df_original = df_original.sort_values('algorithm')
 colors = ['#909c86', '#e389b9', '#269658', '#5c1ad6', '#f20a21', '#000000']
 markers = ['s', 'P', 'D', '^', 'o', '*', '.']
 labels = ["OA", "$\kappa$"]
-min_lim = min(df_original["metric1"].min(),df_original["metric2"].min())-0.1
-max_lim = min(df_original["metric1"].max(),df_original["metric2"].max())+0.1
+min_lim = min(df_original["oa"].min(),df_original["k"].min())-0.1
+max_lim = min(df_original["oa"].max(),df_original["k"].max())+0.1
 datasets = ["GHISACONUS", "Indian Pines"]
 
 fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(15, 10))
 
-for metric_index,metric in enumerate(["metric1", "metric2"]):
+for metric_index,metric in enumerate(["oa", "k"]):
     for ds_index, dataset in enumerate(datasets):
         dataset_df = df_original[df_original["dataset"] == dataset].copy()
         for index, algorithm in enumerate(priority_order):

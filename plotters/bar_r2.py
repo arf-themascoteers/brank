@@ -17,10 +17,10 @@ def plot_bar():
 
     for a in algorithms:
         rows = df_lucas[df_lucas["algorithm"] == a]
-        lucas_time.append(rows.iloc[0]["metric1"])
+        lucas_time.append(rows.iloc[0]["oa"])
 
         rows = df_short[df_short["algorithm"] == a]
-        short_time.append(rows.iloc[0]["metric1"])
+        short_time.append(rows.iloc[0]["oa"])
 
     fig = go.Figure(data=[
         go.Bar(name='LUCAS (Truncated)', x=algorithms, y=short_time),

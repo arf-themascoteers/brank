@@ -35,8 +35,8 @@ class Algorithm(ABC):
         elapsed_time = (datetime.now() - start_time).total_seconds()
         evaluation_train_x = self.transform(self.splits.evaluation_train_x)
         evaluation_test_x = self.transform(self.splits.evaluation_test_x)
-        metric1, metric2 = self.compute_performance_with_transformed_xs(evaluation_train_x, evaluation_test_x)
-        return Metrics(elapsed_time, metric1, metric2, selected_features)
+        oa, k = self.compute_performance_with_transformed_xs(evaluation_train_x, evaluation_test_x)
+        return Metrics(elapsed_time, oa, k, selected_features)
 
     def compute_performance_with_selected_indices(self, selected_indices):
         evaluation_train_x = Algorithm.transform_with_selected_indices(self.splits.evaluation_train_x, selected_indices)
@@ -45,8 +45,8 @@ class Algorithm(ABC):
 
     def compute_performance_with_transformed_xs(self, evaluation_train_x, evaluation_test_x):
         task = DSManager.get_task_by_dataset_name(self.splits.get_name())
-        metric1, metric2 = evaluate_train_test_pair(task, evaluation_train_x, self.splits.evaluation_train_y, evaluation_test_x, self.splits.evaluation_test_y, self.splits.scaler)
-        return metric1, metric2
+        oa, k = evaluate_train_test_pair(task, evaluation_train_x, self.splits.evaluation_train_y, evaluation_test_x, self.splits.evaluation_test_y, self.splits.scaler)
+        return oa, k
 
     @abstractmethod
     def get_selected_indices(self):

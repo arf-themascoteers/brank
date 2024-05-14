@@ -10,7 +10,7 @@ locations = [loc for loc in locations if os.path.exists(loc)]
 algorithms = ["mcuve","spa","bsnet","bsdr"]
 datasets = ["lucas"]
 targets = [5,10,15,20,25,30]
-df2 = pd.DataFrame(columns=["dataset","target_size","algorithm","time","metric1","metric2"])
+df2 = pd.DataFrame(columns=["dataset","target_size","algorithm","time","oa","k"])
 
 
 def add_df(base_df, path):
@@ -55,8 +55,8 @@ def make_complete_main_df():
                         "target_size":t,
                         "algorithm": a,
                         "time": 100,
-                        "metric1": 0.2,
-                        "metric2": 0.8
+                        "oa": 0.2,
+                        "k": 0.8
                     }
                 elif len(entries) >= 1:
                     if len(entries) > 1:
@@ -66,8 +66,8 @@ def make_complete_main_df():
                         "target_size":t,
                         "algorithm": a,
                         "time": entries.iloc[0]["time"],
-                        "metric1": entries.iloc[0]["metric1"],
-                        "metric2": entries.iloc[0]["metric2"]
+                        "oa": entries.iloc[0]["oa"],
+                        "k": entries.iloc[0]["k"]
                     }
 
 
@@ -83,8 +83,8 @@ def add_all_in_main():
                     "target_size": t,
                     "algorithm": "all_bands",
                     "time": 100,
-                    "metric1": 0.2,
-                    "metric2": 0.8
+                    "oa": 0.2,
+                    "k": 0.8
                 }
             elif len(entries) >= 1:
                 if len(entries) > 1:
@@ -95,8 +95,8 @@ def add_all_in_main():
                     "target_size": t,
                     "algorithm": "all_bands",
                     "time": 0,
-                    "metric1": entries.iloc[0]["metric1"],
-                    "metric2": entries.iloc[0]["metric2"]
+                    "oa": entries.iloc[0]["oa"],
+                    "k": entries.iloc[0]["k"]
                 }
 
 

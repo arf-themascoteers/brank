@@ -13,7 +13,7 @@ metric_map = {
         "Indian Pines": "Logarithmic Training Time",
         "GHISACONUS": "Logarithmic Training Time",
     },
-    "metric1":{
+    "oa":{
         "LUCAS": "$R^2$",
         "LUCAS (Skipped)": "$R^2$",
         "LUCAS (Downsampled)": "$R^2$",
@@ -21,7 +21,7 @@ metric_map = {
         "Indian Pines": "OA",
         "GHISACONUS": "OA",
     },
-    "metric2":{
+    "k":{
         "LUCAS": "RMSE",
         "Indian Pines": "$\kappa$",
         "GHISACONUS": "$\kappa$",

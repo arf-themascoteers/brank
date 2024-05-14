@@ -17,7 +17,7 @@ min_time = df_original["time"].min()-0.1
 max_time = df_original["time"].max()+0.1
 datasets = ["GHISACONUS", "Indian Pines"]
 
-for metric_index,metric in enumerate(["time"]):#, "metric1", "metric2"]):
+for metric_index,metric in enumerate(["time"]):#, "oa", "k"]):
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(15, 6))
     for ds_index, dataset in enumerate(datasets):
         dataset_df = df_original[df_original["dataset"] == dataset].copy()

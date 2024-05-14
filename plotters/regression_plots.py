@@ -14,7 +14,7 @@ df_original = df_original.sort_values('algorithm')
 colors = ['#909c86','#d2ff41' , '#269658', '#f20a21','#000000']
 markers = ['star-open', 'pentagon-open', 'circle-open', 'hash-open', 'triangle-up-open', 'square-open', None]
 
-for metric in ["time","metric1", "metric2"]:
+for metric in ["time","oa", "k"]:
     for dataset in ["LUCAS"]:
         fig = go.Figure()
         dataset_df = df_original[df_original["dataset"] == dataset].copy()

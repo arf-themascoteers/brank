@@ -4,23 +4,23 @@ from train_test_evaluator import evaluate_train_test_pair
 
 def evaluate(dataset, folds, bands):
     oas = []
+    aas = []
     ks = []
     d = DSManager(dataset,folds)
     for fold, splits in enumerate(d.get_k_folds()):
         evaluation_train_x = splits.evaluation_train_x[:,bands]
         evaluation_test_x = splits.evaluation_test_x[:,bands]
 
-        oa, k = evaluate_train_test_pair(evaluation_train_x, splits.evaluation_train_y, evaluation_test_x, splits.evaluation_test_y)
+        oa, aa, k = evaluate_train_test_pair(evaluation_train_x, splits.evaluation_train_y, evaluation_test_x, splits.evaluation_test_y)
         oas.append(oa)
+        aas.append(aa)
         ks.append(k)
-    return oas, ks
+    return oas, aas, ks
 
 
 def compare(dataset, folds, bands1, bands2):
-    oas1, ks1 = evaluate(dataset, folds, bands1)
-    print("oas1,ks1",oas1,ks1)
-    oas2, ks2 = evaluate(dataset, folds, bands2)
-    print("oas2,ks2", oas2, ks2)
+    oas1, aas1, ks1 = evaluate(dataset, folds, bands1)
+    oas2, aas2, ks2 = evaluate(dataset, folds, bands2)
 
     mean_oas1 = sum(oas1)/len(oas1)
     mean_oas2 = sum(oas2)/len(oas2)
@@ -30,14 +30,16 @@ def compare(dataset, folds, bands1, bands2):
     else:
         print(f"Second is better")
 
-    print(oas1, ks1)
-    print(oas2, ks2)
+    mean_aas1 = sum(aas1)/len(aas1)
+    mean_aas2 = sum(aas2)/len(aas2)
 
     mean_k1 = sum(ks1)/len(ks1)
     mean_k2 = sum(ks2)/len(ks2)
 
     print(mean_oas1, mean_oas2)
+    print(mean_aas1, mean_aas2)
     print(mean_k1, mean_k2)
+
 
 dataset = "indian_pines"
 folds = 10

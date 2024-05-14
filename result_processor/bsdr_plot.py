@@ -8,7 +8,7 @@ root = "../results"
 algorithms = ["bsdr","bsdr1","bsdr2","bsdr3","bsdr4","bsdr5"]
 datasets = ["ghisaconus","indian_pines","lucas"]
 targets = [5,10,15,20,25,30]
-df2 = pd.DataFrame(columns=["dataset","target_size","algorithm","time","metric1","metric2"])
+df2 = pd.DataFrame(columns=["dataset","target_size","algorithm","time","oa","k"])
 
 
 def add_df(base_df, path):
@@ -42,8 +42,8 @@ def make_complete_main_df():
                         "target_size":t,
                         "algorithm": a,
                         "time": 100,
-                        "metric1": 0.2,
-                        "metric2": 0.8
+                        "oa": 0.2,
+                        "k": 0.8
                     }
                 elif len(entries) >= 1:
                     if len(entries) > 1:
@@ -53,8 +53,8 @@ def make_complete_main_df():
                         "target_size":t,
                         "algorithm": a,
                         "time": entries.iloc[0]["time"],
-                        "metric1": entries.iloc[0]["metric1"],
-                        "metric2": entries.iloc[0]["metric2"]
+                        "oa": entries.iloc[0]["oa"],
+                        "k": entries.iloc[0]["k"]
                     }
 
 def rename_algorithms():
@@ -78,7 +78,7 @@ def plot_me():
     markers = ['star-open', 'pentagon-open', 'circle-open', 'hash-open', 'triangle-up-open', 'diamond-open',
                'square-open', None]
     datasets = ["GHISACONUS", "Indian Pines"]
-    for metric in ["time", "metric1", "metric2"]:
+    for metric in ["time", "oa", "k"]:
         for ds_index, dataset in enumerate(datasets):
             fig = go.Figure()
             dataset_df = df_original[df_original["dataset"] == dataset].copy()

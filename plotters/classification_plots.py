@@ -15,7 +15,7 @@ colors = ['#909c86','#d2ff41' , '#269658', '#5c1ad6', '#f20a21','#000000']
 markers = ['star-open', 'pentagon-open', 'circle-open', 'hash-open', 'triangle-up-open','diamond-open', 'square-open', None]
 datasets = ["GHISACONUS", "Indian Pines"]
 
-for metric in ["time","metric1", "metric2"]:
+for metric in ["time","oa", "k"]:
     for ds_index, dataset in enumerate(datasets):
         fig = go.Figure()
         dataset_df = df_original[df_original["dataset"] == dataset].copy()

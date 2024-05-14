@@ -13,11 +13,11 @@ class Reporter:
 
         if not os.path.exists(self.summary_file):
             with open(self.summary_file, 'w') as file:
-                file.write("dataset,target_size,algorithm,time,metric1,metric2,selected_features\n")
+                file.write("dataset,target_size,algorithm,time,oa,aa,k,selected_features\n")
 
         if not os.path.exists(self.details_file):
             with open(self.details_file, 'w') as file:
-                file.write("dataset,target_size,fold,algorithm,repeat,time,metric1,metric2,selected_features\n")
+                file.write("dataset,target_size,fold,algorithm,repeat,time,oa,aa,k,selected_features\n")
 
         if not self.skip_all_bands:
             self.all_features_details_filename = f"all_features_details_{self.summary_filename}"
@@ -27,21 +27,22 @@ class Reporter:
 
             if not os.path.exists(self.all_features_summary_file):
                 with open(self.all_features_summary_file, 'w') as file:
-                    file.write("dataset,metric1,metric2\n")
+                    file.write("dataset,oa,aa,k\n")
 
             if not os.path.exists(self.all_features_details_file):
                 with open(self.all_features_details_file, 'w') as file:
-                    file.write("fold,dataset,metric1,metric2\n")
+                    file.write("fold,dataset,oa,aa,k\n")
 
     def write_details(self, algorithm, fold, repeat, metric:Metrics):
         time = Reporter.sanitize_metric(metric.time)
-        metric1 = Reporter.sanitize_metric(metric.metric1)
-        metric2 = Reporter.sanitize_metric(metric.metric2)
+        oa = Reporter.sanitize_metric(metric.oa)
+        aa = Reporter.sanitize_metric(metric.aa)
+        k = Reporter.sanitize_metric(metric.k)
         metric.selected_features = sorted(metric.selected_features)
         with open(self.details_file, 'a') as file:
             file.write(f"{algorithm.splits.get_name()},{algorithm.target_size},{fold},{algorithm.get_name()},"
                        f"{repeat},"
-                       f"{time},{metric1},{metric2},{'-'.join([str(i) for i in metric.selected_features])}\n")
+                       f"{time},{oa},{aa},{k},{'-'.join([str(i) for i in metric.selected_features])}\n")
         self.update_summary(algorithm)
 
     def update_summary(self, algorithm):
@@ -50,8 +51,9 @@ class Reporter:
         if len(df) == 0:
             return
         time = round(df["time"].mean(), 2)
-        metric1 = Reporter.sanitize_metric(df["metric1"].mean())
-        metric2 = Reporter.sanitize_metric(df["metric2"].mean())
+        oa = Reporter.sanitize_metric(df["oa"].mean())
+        aa = Reporter.sanitize_metric(df["aa"].mean())
+        k = Reporter.sanitize_metric(df["k"].mean())
         selected_features = '||'.join(df['selected_features'].astype(str))
 
         df2 = pd.read_csv(self.summary_file)
@@ -59,20 +61,22 @@ class Reporter:
         if len(df2[mask]) == 0:
             df2.loc[len(df2)] = {
                 "dataset":algorithm.splits.get_name(), "target_size":algorithm.target_size, "algorithm": algorithm.get_name(),
-                "time":time,"metric1":metric1,"metric2":metric2, "selected_features":selected_features
+                "time":time,"oa":oa,"aa":aa,"k":k, "selected_features":selected_features
             }
         else:
             df2.loc[mask, 'time'] = time
-            df2.loc[mask, 'metric1'] = metric1
-            df2.loc[mask, 'metric2'] = metric2
+            df2.loc[mask, 'oa'] = oa
+            df2.loc[mask, 'aa'] = aa
+            df2.loc[mask, 'k'] = k
             df2.loc[mask, 'selected_features'] = selected_features
         df2.to_csv(self.summary_file, index=False)
 
-    def write_details_all_features(self, fold, dataset, metric1, metric2):
-        metric1 = Reporter.sanitize_metric(metric1)
-        metric2 = Reporter.sanitize_metric(metric2)
+    def write_details_all_features(self, fold, dataset, oa, aa, k):
+        oa = Reporter.sanitize_metric(oa)
+        aa = Reporter.sanitize_metric(aa)
+        k = Reporter.sanitize_metric(k)
         with open(self.all_features_details_file, 'a') as file:
-            file.write(f"{fold},{dataset},{metric1},{metric2}\n")
+            file.write(f"{fold},{dataset},{oa},{aa},{k}\n")
         self.update_summary_for_all_features(dataset)
 
     def update_summary_for_all_features(self, dataset):
@@ -81,16 +85,18 @@ class Reporter:
         if len(df) == 0:
             return
 
-        metric1 = max(df["metric1"].mean(),0)
-        metric2 = max(df["metric2"].mean(),0)
+        oa = max(df["oa"].mean(),0)
+        aa = max(df["aa"].mean(),0)
+        k = max(df["k"].mean(),0)
 
         df2 = pd.read_csv(self.all_features_summary_file)
         mask = (df2['dataset'] == dataset)
         if len(df2[mask]) == 0:
-            df2.loc[len(df2)] = {"dataset":dataset, "metric1":metric1, "metric2": metric2}
+            df2.loc[len(df2)] = {"dataset":dataset, "oa":oa, "aa":aa, "k": k}
         else:
-            df2.loc[mask, 'metric1'] = metric1
-            df2.loc[mask, 'metric2'] = metric2
+            df2.loc[mask, 'oa'] = oa
+            df2.loc[mask, 'aa'] = aa
+            df2.loc[mask, 'k'] = k
         df2.to_csv(self.all_features_summary_file, index=False)
 
     def get_saved_metrics(self, algorithm, fold, repeat):
@@ -104,7 +110,7 @@ class Reporter:
         if len(rows) == 0:
             return None
         row = rows.iloc[0]
-        return Metrics(row["time"], row["metric1"], row["metric2"], row["selected_features"])
+        return Metrics(row["time"], row["oa"], row["aa"], row["k"], row["selected_features"])
 
     def get_saved_metrics_for_all_feature(self, fold, dataset):
         df = pd.read_csv(self.all_features_details_file)
@@ -114,7 +120,7 @@ class Reporter:
         if len(rows) == 0:
             return None, None
         row = rows.iloc[0]
-        return row["metric1"], row["metric2"]
+        return row["oa"], row["aa"], row["k"]
 
     @staticmethod
     def sanitize_metric(metric):

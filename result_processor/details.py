@@ -10,7 +10,7 @@ locations = [loc for loc in locations if os.path.exists(loc)]
 algorithms = ["mcuve","bsnet","bsdr"]
 datasets = ["lucas"]
 targets = [5,10,15,20,25,30]
-df2 = pd.DataFrame(columns=["dataset","target_size","algorithm","time","metric1","metric2"])
+df2 = pd.DataFrame(columns=["dataset","target_size","algorithm","time","oa","k"])
 
 
 def add_df(base_df, path):
@@ -46,8 +46,8 @@ def merge_all_main():
             "target_size": row["target_size"],
             "algorithm": row["algorithm"],
             "time": row["time"],
-            "metric1": row["metric1"],
-            "metric2": row["metric2"]
+            "oa": row["oa"],
+            "k": row["k"]
         }
     for index, row in all_df.iterrows():
         df2.loc[len(df2)] = {
@@ -55,8 +55,8 @@ def merge_all_main():
             "target_size": 0,
             "algorithm": "All Bands",
             "time": 0,
-            "metric1": row["metric1"],
-            "metric2": row["metric2"]
+            "oa": row["oa"],
+            "k": row["k"]
         }
     df2 = df2.sort_values(by=['algorithm', 'dataset', 'target_size'])
 
