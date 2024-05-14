@@ -22,7 +22,8 @@ algorithm_map = {
     "pcal":"PCAL",
     "lasso":"LASSO",
     "spa":"SPA",
-    "linspacer":"Linspacer"
+    "linspacer":"Linspacer",
+    "rec":"Reconstructor"
 }
 
 color_map = {

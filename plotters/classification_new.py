@@ -9,7 +9,7 @@ main_df = pd.DataFrame()
 all_df = pd.DataFrame()
 root = "../results"
 locations = [root]
-algorithms = ["linspacer","bsnet"]
+algorithms = ["linspacer","bsnet","bsdr","rec"]
 datasets = ["indian_pines","paviaU","salinasA"]
 targets = [5,10,15,20,25,30]
 df2 = pd.DataFrame(columns=["dataset","target_size","algorithm","time","oa","aa","k"])
