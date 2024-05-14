@@ -2,9 +2,9 @@ from task_runner import TaskRunner
 
 if __name__ == '__main__':
     tasks = {
-        "algorithms" : ["pcal","lasso","linspacer"],
-        "datasets" : ["indian_pines"],
+        "algorithms" : ["linspacer","bsnet"],
+        "datasets" : ["indian_pines","paviaU","salinasA"],
         "target_sizes" : [5, 10, 15, 20, 25, 30]
     }
-    ev = TaskRunner(tasks,1,10,"1.csv")
+    ev = TaskRunner(tasks,1,1,"1.csv")
     ev.evaluate()
