@@ -27,7 +27,8 @@ class ANN(nn.Module):
 
         for index in range(len(structure)-1):
             odict['fc' + str(index+1)] = nn.Linear(structure[index], structure[index+1])
-            odict['lrelu' + str(index+1)] = nn.LeakyReLU()
+            if index != len(structure)-2:
+                odict['lrelu' + str(index+1)] = nn.LeakyReLU()
 
         return nn.Sequential(odict)
 
@@ -37,10 +38,8 @@ class ANN(nn.Module):
 
     def forward(self, linterp):
         outputs = linterp(self.get_indices())
-        soc_hat = self.linear(outputs)
-        if self.class_size == 1:
-            soc_hat = soc_hat.reshape(-1)
-        return soc_hat
+        y_hat = self.linear(outputs)
+        return y_hat
 
     def get_indices(self):
         return torch.sigmoid(self.indices)

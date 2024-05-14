@@ -59,9 +59,8 @@ class BSDR:
         linterp_validation = LinearInterpolationModule(X_validation, self.device)
         y = torch.tensor(y, dtype=torch.float32).to(self.device)
         y_validation = torch.tensor(y_validation, dtype=torch.float32).to(self.device)
-        if not self.is_regression():
-            y = y.type(torch.LongTensor).to(self.device)
-            y_validation = y_validation.type(torch.LongTensor).to(self.device)
+        y = y.type(torch.LongTensor).to(self.device)
+        y_validation = y_validation.type(torch.LongTensor).to(self.device)
         for epoch in range(self.epochs):
             y_hat = self.model(linterp)
             loss = self.criterion(y_hat, y)
