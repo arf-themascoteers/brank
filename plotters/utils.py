@@ -1,31 +1,16 @@
 dataset_map = {
-    "lucas":"LUCAS",
     "indian_pines":"Indian Pines",
-    "ghisaconus":"GHISACONUS",
+    "paviaU":"Pavia University",
+    "salinasA":"Salinas A",
+    "pavia":"Pavia",
+    "salinas":"salinas"
 }
 
 metric_map = {
-    "time":{
-        "LUCAS": "Logarithmic Training Time",
-        "LUCAS (Skipped)": "Logarithmic Training Time",
-        "LUCAS (Downsampled)": "Logarithmic Training Time",
-        "LUCAS (Truncated)": "Logarithmic Training Time",
-        "Indian Pines": "Logarithmic Training Time",
-        "GHISACONUS": "Logarithmic Training Time",
-    },
-    "oa":{
-        "LUCAS": "$R^2$",
-        "LUCAS (Skipped)": "$R^2$",
-        "LUCAS (Downsampled)": "$R^2$",
-        "LUCAS (Truncated)": "$R^2$",
-        "Indian Pines": "OA",
-        "GHISACONUS": "OA",
-    },
-    "k":{
-        "LUCAS": "RMSE",
-        "Indian Pines": "$\kappa$",
-        "GHISACONUS": "$\kappa$",
-    }
+    "time":"Logarithmic Training Time",
+    "oa": "OA",
+    "aa": "AA",
+    "k": "$\kappa$"
 }
 
 algorithm_map = {
@@ -37,6 +22,7 @@ algorithm_map = {
     "pcal":"PCAL",
     "lasso":"LASSO",
     "spa":"SPA",
+    "linspacer":"Linspacer"
 }
 
 color_map = {
