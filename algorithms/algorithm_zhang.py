@@ -2,7 +2,6 @@ from algorithm import Algorithm
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 from algorithms.zhang.zhang_net import ZhangNet
-from algorithms.zhang.sparse import Sparse
 import numpy as np
 import math
 
@@ -11,7 +10,6 @@ class AlgorithmZhang(Algorithm):
     def __init__(self, target_size, splits):
         super().__init__(target_size, splits)
         self.criterion = torch.nn.CrossEntropyLoss()
-        self.sparse = Sparse()
 
     def get_selected_indices(self):
         class_size = len(np.unique(self.splits.train_y))
@@ -19,8 +17,8 @@ class AlgorithmZhang(Algorithm):
         if self.splits.get_name() == "ghisaconus":
             last_layer_input = 64
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        bsnet = ZhangNet(self.splits.train_x.shape[1], class_size, last_layer_input).to(device)
-        optimizer = torch.optim.Adam(bsnet.parameters(), lr=0.001, betas=(0.9,0.999))
+        zhangnet = ZhangNet(self.splits.train_x.shape[1], class_size, last_layer_input).to(device)
+        optimizer = torch.optim.Adam(zhangnet.parameters(), lr=0.001, betas=(0.9,0.999))
         X_train = torch.tensor(self.splits.train_x, dtype=torch.float32).to(device)
         y_train = torch.tensor(self.splits.train_y, dtype=torch.int32).to(device)
         dataset = TensorDataset(X_train, y_train)
@@ -35,10 +33,10 @@ class AlgorithmZhang(Algorithm):
         for epoch in range(500):
             for batch_idx, (X, y) in enumerate(dataloader):
                 optimizer.zero_grad()
-                channel_weights, y_hat = bsnet(X)
+                channel_weights, sparse_weights, y_hat = zhangnet(X)
                 y = y.type(torch.LongTensor).to(device)
                 mse_loss = self.criterion(y_hat, y)
-                sparse_loss = self.sparse(channel_weights)
+                sparse_loss = self.sparse_loss(channel_weights)
                 lambda_value = self.get_lambda(epoch+1)
                 loss = mse_loss + lambda_value*sparse_loss
                 loss.backward()
@@ -48,10 +46,15 @@ class AlgorithmZhang(Algorithm):
         band_indx = (torch.argsort(mean_weight, descending=True)).tolist()
         super()._set_all_indices(band_indx)
         selected_indices = band_indx[: self.target_size]
-        return bsnet, selected_indices
+        return zhangnet, selected_indices
+
+    def sparse_loss(self, channel_weights):
+        channel_weights = torch.sum(channel_weights, dim=1)
+        m = torch.mean(channel_weights)
+        return m
 
     def get_name(self):
         return "zhang"
 
     def get_lambda(self, epoch):
-        return 0.001 * math.exp(epoch/500)
+        return 0.0001 * math.exp(-epoch/500)

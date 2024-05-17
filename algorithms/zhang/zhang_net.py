@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch
+from algorithms.zhang.sparse import Sparse
 
 
 class ZhangNet(nn.Module):
@@ -30,16 +31,17 @@ class ZhangNet(nn.Module):
             nn.Flatten(start_dim=1),
             nn.Linear(last_layer_input,self.number_of_classes)
         )
-
+        self.sparse = Sparse()
         num_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
         print("Number of learnable parameters:", num_params)
 
     def forward(self, X):
         channel_weights = self.weighter(X)
-        reweight_out = X * channel_weights
+        sparse_weights = self.sparse(channel_weights)
+        reweight_out = X * sparse_weights
         reweight_out = reweight_out.reshape(reweight_out.shape[0],1,reweight_out.shape[1])
         output = self.classnet(reweight_out)
-        return channel_weights, output
+        return channel_weights, sparse_weights, output
 
 
 

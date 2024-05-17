@@ -11,6 +11,6 @@ class Sparse(nn.Module):
     def forward(self, X):
         k = torch.tensor(100).to(self.device)
         X_copy = X.clone()
-        X_copy[X_copy<k] = 0
-        X_copy = torch.mean(X_copy)
+        X_copy = torch.sum(X_copy, dim=0)
+        X_copy[X_copy<k] = torch.tanh(X_copy[X_copy<k])
         return X_copy
