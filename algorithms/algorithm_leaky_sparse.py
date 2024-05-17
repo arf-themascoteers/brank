@@ -51,7 +51,7 @@ class AlgorithmLeakySparse(Algorithm):
         return leaky_sparse_net, selected_indices
 
     def get_name(self):
-        return "zhang"
+        return "leaky_sparse_net"
 
     def get_lambda(self, epoch):
         return 0.001 * math.exp(epoch/500)
