@@ -29,7 +29,7 @@ class AlgorithmCreator:
 
             "linspacer": AlgorithmLinspacer,
 
-            "leaky_sparse_net" : AlgorithmSSparse
+            "ssparse" : AlgorithmSSparse
         }
 
         if name not in algorithms:
