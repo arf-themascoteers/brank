@@ -10,7 +10,7 @@ from algorithms.algorithm_bsdr import AlgorithmBSDR
 from algorithms.algorithm_reconstructor import AlgorithmReconstructor
 
 from algorithms.algorithm_linspacer import AlgorithmLinspacer
-from algorithms.algorithm_leaky_sparse import AlgorithmLeakySparse
+from algorithms.algorithm_ssparse import AlgorithmSSparse
 
 
 class AlgorithmCreator:
@@ -29,7 +29,7 @@ class AlgorithmCreator:
 
             "linspacer": AlgorithmLinspacer,
 
-            "leaky_sparse_net" : AlgorithmLeakySparse
+            "leaky_sparse_net" : AlgorithmSSparse
         }
 
         if name not in algorithms:
