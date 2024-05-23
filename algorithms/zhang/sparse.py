@@ -8,8 +8,9 @@ class Sparse(nn.Module):
         self.criterion = torch.nn.MSELoss(reduction='sum')
 
     def forward(self, X):
-        k = torch.tensor(100).to(X.device)
-        X = torch.sum(X, dim=0)
+        batch_size = X.shape[0]
+        threshold = 100
+        k = torch.tensor(threshold/batch_size).to(X.device)
         X = torch.where(X < k, 0, X)
         return X
 
